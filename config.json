@@ -1,0 +1,37 @@
+{
+  "name": "Price Chart",
+  "description": "Add-on for managing devices based on electricity prices",
+  "version": "1.0.0",
+  "slug": "Įrenginio valdymas pagal NordPool biržos kaina",
+  "startup": "application",
+  "arch": [
+    "amd64",
+    "armhf",
+    "armv7",
+    "aarch64",
+    "i386"
+  ],
+  "init": false,
+  "map": [
+    "config:rw"
+  ],
+  "options": {
+    "update_interval": 30,
+    "main_update_times": ["00:00", "14:00"],
+    "price_controls": []
+  },
+  "schema": {
+    "update_interval": "int",
+    "main_update_times": ["str"],
+    "price_controls": [
+      {
+        "entity_id": "str",
+        "price_threshold": "float",
+        "action": "str?enum=turn_on,turn_off",
+        "start_time": "str",
+        "end_time": "str"
+      }
+    ]
+  },
+  "image": "homeassistant/{arch}-irenginio-valdymas-pagal-NordPool-kaina"
+}

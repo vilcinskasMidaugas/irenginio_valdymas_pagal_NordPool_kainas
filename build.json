@@ -1,0 +1,15 @@
+{
+  "build_from": {
+    "amd64": "python:3.9-slim",
+    "armhf": "python:3.9-slim",
+    "armv7": "python:3.9-slim",
+    "aarch64": "python:3.9-slim",
+    "i386": "python:3.9-slim"
+  },
+  "labels": {
+    "io.hass.type": "addon",
+    "io.hass.name": "Price Chart",
+    "io.hass.description": "Add-on for managing devices based on electricity prices",
+    "io.hass.url": "https://github.com/yourusername/price_chart_addon"
+  }
+}

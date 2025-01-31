@@ -19,23 +19,21 @@ UPDATE_TIMES = ["00:00", "14:00"]
 
 _LOGGER = logging.getLogger(__name__)
 
-# Papildyta konfigūracijos schema
 CONFIG_SCHEMA = vol.Schema({
     DOMAIN: vol.Schema({
         vol.Optional('update_interval', default=30): vol.Coerce(int),
         vol.Optional('main_update_times', default=UPDATE_TIMES): vol.All(list, [str]),
         vol.Optional('price_controls', default=[]): vol.All(list, [{
-            vol.Required('entity_id'): str,  # Įrenginio entity_id
-            vol.Required('price_threshold'): vol.Coerce(float),  # Kainos riba
-            vol.Required('action'): vol.In(['turn_on', 'turn_off']),  # Veiksmas
-            vol.Optional('start_time', default='00:00'): str,  # Pradžios laikas
-            vol.Optional('end_time', default='23:59'): str,  # Pabaigos laikas
+            vol.Required('entity_id'): str,
+            vol.Required('price_threshold'): vol.Coerce(float),
+            vol.Required('action'): vol.In(['turn_on', 'turn_off']),
+            vol.Optional('start_time', default='00:00'): str,
+            vol.Optional('end_time', default='23:59'): str,
         }])
     })
 })
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
-    """Set up the price chart component."""
     if DOMAIN not in config:
         return True
 
@@ -43,7 +41,6 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     price_controls = conf.get('price_controls', [])
 
     async def check_price_controls(current_prices):
-        """Patikrinti ir valdyti įrenginius pagal kainas."""
         current_time = dt_util.now()
         current_hour = current_time.strftime('%H:00')
 
@@ -60,7 +57,6 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
             end_time = datetime.datetime.strptime(control['end_time'], '%H:%M').time()
             current_time = current_time.time()
 
-            # Patikrinti ar esame laiko intervale
             if start_time <= current_time <= end_time:
                 should_activate = current_price <= threshold if action == 'turn_on' else current_price > threshold
 
@@ -72,11 +68,9 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                         {'entity_id': entity_id}
                     )
                     _LOGGER.info(f"Triggered {action} for {entity_id} (price: {current_price}, threshold: {threshold})")
-                    # Įrašyti veiksmą į istoriją
                     log_action(entity_id, action, current_price, threshold)
 
     async def async_update_prices(now=None):
-        """Fetch new prices and update chart."""
         _LOGGER.info("Updating electricity prices...")
         today_data, tomorrow_data = await hass.async_add_executor_job(fetch_price_data)
 
@@ -84,7 +78,6 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
             today_periods, today_prices = today_data
             current_prices = dict(zip(today_periods, today_prices))
 
-            # Patikrinti kainas ir valdyti įrenginius
             await check_price_controls(current_prices)
 
             await generate_chart(today_data, tomorrow_data)
@@ -93,9 +86,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         else:
             _LOGGER.warning("Failed to update prices")
 
-    # Pridėti naują paslaugą įrenginių valdymui
     async def manual_device_control(call):
-        """Manual control service."""
         entity_id = call.data.get('entity_id')
         action = call.data.get('action')
         if entity_id and action in ['turn_on', 'turn_off']:
@@ -105,31 +96,23 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                 {'entity_id': entity_id}
             )
 
-    # Užregistruoti paslaugas
     hass.services.async_register(DOMAIN, "update_prices", async_update_prices)
     hass.services.async_register(DOMAIN, "manual_device_control", manual_device_control)
-
-    # Rest of your existing setup code...
 
     return True
 
 def fetch_price_data():
-    # Fetch price data from the URL
     response = requests.get(URL)
     soup = BeautifulSoup(response.content, 'html.parser')
-    # Parse the data and return today's and tomorrow's data
-    # This is a placeholder implementation
     today_data = ([], [])
     tomorrow_data = ([], [])
     return today_data, tomorrow_data
 
 def log_action(entity_id, action, current_price, threshold):
-    # Įrašyti veiksmą į istoriją
     with open('action_history.log', 'a') as f:
         f.write(f"{dt_util.now().isoformat()}, {entity_id}, {action}, {current_price}, {threshold}\n")
 
 async def generate_chart(today_data, tomorrow_data):
-    # Generate and save the chart
     today_periods, today_prices = today_data
     tomorrow_periods, tomorrow_prices = tomorrow_data
 

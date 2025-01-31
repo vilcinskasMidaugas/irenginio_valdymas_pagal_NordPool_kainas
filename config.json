@@ -1,8 +1,8 @@
 {
   "name": "Price Chart",
-  "description": "Add-on Įrenginio valdymas pagal NordPool biržos kaina",
+  "description": "Add-on for managing devices based on electricity prices",
   "version": "1.0.0",
-  "slug": "irenginio_valdymas_pagal_nordpool_birzos_kaina",
+  "slug": "price_chart",
   "startup": "application",
   "arch": [
     "amd64",
@@ -33,5 +33,5 @@
       }
     ]
   },
-  "image": "homeassistant/{arch}-irenginio-valdymas-pagal-NordPool-kaina"
+  "image": "homeassistant/{arch}-price-chart"
 }

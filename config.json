@@ -1,8 +1,8 @@
 {
   "name": "Price Chart",
-  "description": "Add-on for managing devices based on electricity prices",
+  "description": "Add-on Įrenginio valdymas pagal NordPool biržos kaina",
   "version": "1.0.0",
-  "slug": "Įrenginio valdymas pagal NordPool biržos kaina",
+  "slug": "irenginio_valdymas_pagal_nordpool_birzos_kaina",
   "startup": "application",
   "arch": [
     "amd64",

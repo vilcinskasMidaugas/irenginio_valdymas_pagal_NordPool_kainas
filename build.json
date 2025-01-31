@@ -10,6 +10,6 @@
     "io.hass.type": "addon",
     "io.hass.name": "Price Chart",
     "io.hass.description": "Add-on for managing devices based on electricity prices",
-    "io.hass.url": "https://github.com/yourusername/price_chart_addon"
+    "io.hass.url": "https://github.com/vilcinskasMidaugas/irenginio_valdymas_pagal_NordPool_kainas"
   }
 }
